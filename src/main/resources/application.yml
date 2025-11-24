@@ -1,0 +1,13 @@
+server:
+  port: 7171
+
+spring:
+  application:
+    name: weathermap
+  datasource:
+    url: jdbc:mysql://localhost/weathermap
+    username: root
+    password: admin
+
+jwt:
+  secret: secret
