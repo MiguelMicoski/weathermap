@@ -8,18 +8,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
+import weathermap.application.security.SecurityFilter
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig (
+    private val securityFilter: SecurityFilter
+) {
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity) {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
 
-        http.authorizeHttpRequests {
+        return http.authorizeHttpRequests {
             authorize -> authorize.anyRequest().permitAll()
         }.csrf { csrf -> csrf.disable() }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .addFilterBefore(securityFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
 

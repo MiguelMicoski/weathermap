@@ -6,6 +6,8 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
@@ -28,7 +30,11 @@ class UserEntity(
     val credential: String = "",
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @Column(name = "user_role_id")
+    @JoinTable(
+        name = "user_role",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
     val role: List<RoleEntity> = mutableListOf()
 ) : UserDetails {
 
@@ -47,7 +53,7 @@ class UserEntity(
     override fun getPassword(): String? = credential
 
 
-    override fun getUsername(): String? = username
+    override fun getUsername(): String? = login
 
 
 }
