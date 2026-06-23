@@ -7,6 +7,7 @@ import weathermap.application.controller.response.UserResponse
 import weathermap.application.model.UserEntity
 import weathermap.application.repository.RoleRepository
 import weathermap.application.repository.UserRepository
+import weathermap.application.security.Roles
 
 @Service
 class UserService(
@@ -18,8 +19,8 @@ class UserService(
     fun save(createUserRequest: CreateUserRequest): UserResponse {
 
         val password = hashPassword(createUserRequest.password)
-        val role = roleRepository.findByName(DEFAULT_USER_ROLE)
-            ?: throw IllegalStateException("Default role $DEFAULT_USER_ROLE not found")
+        val role = roleRepository.findByName(Roles.USER)
+            ?: throw IllegalStateException("Default role ${Roles.USER} not found")
 
         val userEntity = userRepository.save(
             UserEntity(
@@ -36,10 +37,6 @@ class UserService(
 
     fun hashPassword(rawPassword: String): String {
         return bCryptPasswordEncoder.encode(rawPassword)
-    }
-
-    companion object {
-        private const val DEFAULT_USER_ROLE = "ROLE_USER"
     }
 
 }
