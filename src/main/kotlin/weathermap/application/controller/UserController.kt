@@ -1,5 +1,6 @@
 package weathermap.application.controller
 
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +15,7 @@ import weathermap.application.service.UserService
 class UserController(private val userService: UserService) {
 
     @PostMapping
-    fun save (@RequestBody createUserRequest: CreateUserRequest): ResponseEntity<UserResponse> {
+    fun save (@RequestBody @Valid createUserRequest: CreateUserRequest): ResponseEntity<UserResponse> {
         val response = userService.save(createUserRequest)
         return ResponseEntity.ok(response)
     }

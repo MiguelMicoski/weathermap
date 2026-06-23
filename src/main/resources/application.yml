@@ -1,13 +1,13 @@
 server:
-  port: 7171
+  port: ${SERVER_PORT:7171}
 
 spring:
   application:
     name: weathermap
   datasource:
-    url: jdbc:mysql://localhost/weathermap
-    username: root
-    password: admin
+    url: ${DB_URL:jdbc:mysql://localhost/weathermap}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:admin}
 
 jwt:
-  secret: secret
+  secret: ${JWT_SECRET:change-me-dev-secret}

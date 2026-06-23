@@ -2,6 +2,7 @@ package weathermap.application.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -20,8 +21,11 @@ class SecurityConfig (
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
 
-        return http.authorizeHttpRequests {
-            authorize -> authorize.anyRequest().permitAll()
+        return http.authorizeHttpRequests { authorize ->
+            authorize
+                .requestMatchers("/v1/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
+                .anyRequest().authenticated()
         }.csrf { csrf -> csrf.disable() }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(securityFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter::class.java)

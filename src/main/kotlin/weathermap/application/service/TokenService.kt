@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import weathermap.application.model.UserEntity
 import java.util.Date
 
 @Service
@@ -28,12 +27,12 @@ class TokenService (
         }
     }
 
-    fun validateToken(token: String?): String {
+    fun validateToken(token: String?): String? {
 
         try {
             return JWT.require(Algorithm.HMAC256(secret)).withIssuer("auth0").build().verify(token).subject
         } catch (exception: JWTVerificationException) {
-            throw RuntimeException("Invalid JWT signature!")
+            return null
         }
     }
 }

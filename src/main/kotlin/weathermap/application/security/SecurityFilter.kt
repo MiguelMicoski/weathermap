@@ -22,17 +22,19 @@ class SecurityFilter(
     ) {
         val token = recoveryToken(request)
         if (token != null) {
-            var subject = tokenService.validateToken(token)
-            val user = userRepository.findByLogin(subject)
+            val subject = tokenService.validateToken(token)
+            val user = subject?.let { userRepository.findByLogin(it) }
 
-            val authentication = UsernamePasswordAuthenticationToken(user, null, user?.authorities)
-            SecurityContextHolder.getContext().authentication = authentication
+            if (user != null) {
+                val authentication = UsernamePasswordAuthenticationToken(user, null, user.authorities)
+                SecurityContextHolder.getContext().authentication = authentication
+            }
         }
         filterChain.doFilter(request, response)
     }
 
     fun recoveryToken(request: HttpServletRequest): String? {
         val token = request.getHeader("Authorization") ?: return null
-        return token.replace("Bearer ", "")
+        return token.takeIf { it.startsWith("Bearer ") }?.removePrefix("Bearer ")
     }
 }
