@@ -17,8 +17,9 @@ class UserService(
 
     fun save(createUserRequest: CreateUserRequest): UserResponse {
 
-        val password = bCryptPasswordEncoder.encode(createUserRequest.password)
-        val roles = roleRepository.findAllById(createUserRequest.roleIds)
+        val password = hashPassword(createUserRequest.password)
+        val role = roleRepository.findByName(DEFAULT_USER_ROLE)
+            ?: throw IllegalStateException("Default role $DEFAULT_USER_ROLE not found")
 
         val userEntity = userRepository.save(
             UserEntity(
@@ -26,11 +27,19 @@ class UserService(
                 login = createUserRequest.username,
                 email = createUserRequest.email,
                 credential = password,
-                role = roles
+                role = listOf(role)
             )
         )
 
         return userEntity.toResponse()
+    }
+
+    fun hashPassword(rawPassword: String): String {
+        return bCryptPasswordEncoder.encode(rawPassword)
+    }
+
+    companion object {
+        private const val DEFAULT_USER_ROLE = "ROLE_USER"
     }
 
 }
