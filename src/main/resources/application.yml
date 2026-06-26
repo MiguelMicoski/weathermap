@@ -11,3 +11,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:change-me-dev-secret}
+
+weather:
+  api:
+    base-url: ${WEATHER_API_BASE_URL:https://api.weatherapi.com/v1}
+    key: ${WEATHER_API_KEY:}
